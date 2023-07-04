@@ -1,40 +1,66 @@
-var body = document.body;
-var head = document.head;
+var timeStamps = [];
 
-var container = document.createElement("div");
-container.className = "container";
-var timer = document.createElement("div");
-timer.className = "timer";
-
-var btnGroup = document.createElement("div");
-btnGroup.className = "btn-group";
-var stop = document.createElement("button");
-stop.className = "btn stop";
-stop.innerText = "STOP";
-
-var start = document.createElement("button");
-start.className = "btn start";
-start.innerText = "START";
-var reset = document.createElement("button");
-reset.className = "btn reset";
-reset.innerText = "RESET";
-
-btnGroup.append(start, stop, reset);
-container.append(timer, btnGroup);
-body.append(container);
-
-function createSpan(className, innerText) {
-  const span = document.createElement("span");
-  span.className = className;
-  span.innerText = innerText;
-  return span;
+var lastUpdate = Date.now();
+var mili = 0;
+var hundredth = 0;
+var second = 0;
+var minute = 0;
+function createElement(element = "div", className = "", id = "") {
+  var div = document.createElement(element);
+  div.id = id;
+  div.className = className;
+  return div;
 }
 
-const hours = createSpan("hours", "20");
-const minutes = createSpan("minutes", "10");
-const secondes = createSpan("secondes", "60");
-const miliSecondes = createSpan("miliSecondes", "30");
+function calRadialProgress(element, progress = 0) {
+  element.style.background = `radial-gradient(closest-side, white 79%, transparent 80% 100%),
+    conic-gradient(rgb(206, 26, 22) ${progress}%, pink 0)`;
+}
 
-timer.append(hours, minutes, secondes, miliSecondes);
+var timerBox = createElement("div", "timer-box");
+var buttonBox = createElement("div", "button-box");
 
-head.innerHTML += "<link rel='stylesheet' href='style.css' />";
+var { circle: miliDiv, span: miliSpan } = createTimeCircle("mili");
+var { circle: hundredthDiv, span: hundredthSpan } =
+  createTimeCircle("hundredth");
+var { circle: secondDiv, span: secondSpan } = createTimeCircle("second");
+var { circle: minuteDiv, span: minuteSpan } = createTimeCircle("minute");
+var loop = setInterval(() => {
+  var now = Date.now();
+  var dt = now - lastUpdate;
+  lastUpdate = now;
+  mili += dt;
+  if (mili >= 100) {
+    hundredth += 10;
+    mili = 0;
+  }
+
+  if (hundredth >= 100) {
+    hundredth = 0;
+    second++;
+  }
+
+  if (second >= 60) {
+    second = 0;
+    minute++;
+  }
+
+  miliSpan.innerText = mili;
+  hundredthSpan.innerText = hundredth;
+  secondSpan.innerText = second;
+  minuteSpan.innerText = minute;
+
+  calRadialProgress(miliDiv, mili);
+  calRadialProgress(hundredthDiv, hundredth);
+  calRadialProgress(secondDiv, Math.round((second / 60) * 100));
+  calRadialProgress(minuteDiv, Math.round((minute / 60) * 100));
+}, 0);
+timerBox.append(minuteDiv, secondDiv, hundredthDiv, miliDiv);
+
+document.body.append(timerBox);
+function createTimeCircle(id) {
+  var circle = createElement("div", "circle", id);
+  var span = createElement("span");
+  circle.append(span);
+  return { circle, span };
+}
