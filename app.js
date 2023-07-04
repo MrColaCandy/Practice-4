@@ -81,13 +81,14 @@ function updateTimer() {
   var dt = now - lastUpdate;
   lastUpdate = now;
   mili += dt;
-  if (mili >= 100) {
-    hundredth += 10;
+  if (mili >= 10) {
+    hundredth++;
     mili = 0;
   }
 
   if (hundredth >= 100) {
     hundredth = 0;
+
     second++;
   }
 
@@ -95,8 +96,11 @@ function updateTimer() {
     second = 0;
     minute++;
   }
+  if (minute >= 60) {
+    minute = 0;
+  }
 
-  renderTimer(mili, hundredth, second, minute);
+  renderTimer(mili * 10, +hundredth, +second, +minute);
 }
 
 function renderTimer(mili, hundredth, second, minute) {
