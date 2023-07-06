@@ -40,7 +40,6 @@ stopButton.onclick = () => {
   if (!start) return;
   start = false;
   timeStamps.push({
-    id: Math.random() * 10000,
     minute,
     second,
     hundredth,
@@ -104,15 +103,19 @@ function updateTimer() {
 }
 
 function renderTimer(mili, hundredth, second, minute) {
-  miliSpan.innerText = mili;
-  hundredthSpan.innerText = hundredth;
-  secondSpan.innerText = second;
-  minuteSpan.innerText = minute;
+  miliSpan.innerText = toText(mili);
+  hundredthSpan.innerText = toText(hundredth);
+  secondSpan.innerText = toText(second);
+  minuteSpan.innerText = toText(minute);
 
   calRadialProgress(miliDiv, mili);
   calRadialProgress(hundredthDiv, hundredth);
   calRadialProgress(secondDiv, Math.round((second / 60) * 100));
   calRadialProgress(minuteDiv, Math.round((minute / 60) * 100));
+}
+
+function toText(number) {
+  return number < 10 ? `0${number}` : number;
 }
 
 function createTimeCircle(id) {
@@ -126,7 +129,9 @@ function renderStamps() {
   times.forEach((t) => t.remove());
   timeStamps.forEach((t) => {
     var stamp = createElement("div", "stamp", `${t.id}`);
-    stamp.innerText = `${t.minute} : ${t.second} : ${t.hundredth} : ${t.mili}`;
+    stamp.innerText = `${toText(t.minute)} : ${toText(t.second)} : ${toText(
+      t.hundredth
+    )} : ${toText(t.mili)}`;
     timeBox.append(stamp);
   });
 }
