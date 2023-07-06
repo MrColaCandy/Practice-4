@@ -131,7 +131,7 @@ function renderStamps() {
     var stamp = createElement("div", "stamp", `${t.id}`);
     stamp.innerText = `${toText(t.minute)} : ${toText(t.second)} : ${toText(
       t.hundredth
-    )} : ${toText(t.mili)}`;
+    )} : ${toText(Math.floor(mili * 10))}`;
     timeBox.append(stamp);
   });
 }
