@@ -72,7 +72,9 @@ buttonBox.append(stopButton, startButton, resetButton);
 document.body.append(timerBox, buttonBox, timeBox);
 function reset() {
   mili = hundredth = second = minute = 0;
+  timeStamps = [];
   renderTimer(0, 0, 0, 0);
+  renderStamps();
 }
 
 function updateTimer() {
@@ -115,7 +117,7 @@ function renderTimer(mili, hundredth, second, minute) {
 }
 
 function toText(number) {
-  return number < 10 ? `0${number}` : number;
+  return (text = number < 10 ? `0${number}` : number.toString());
 }
 
 function createTimeCircle(id) {
@@ -126,12 +128,16 @@ function createTimeCircle(id) {
 }
 function renderStamps() {
   var times = [...timeBox.children];
-  times.forEach((t) => t.remove());
-  timeStamps.forEach((t) => {
-    var stamp = createElement("div", "stamp", `${t.id}`);
+  for (let i = 0; i < times.length; i++) {
+    const element = times[i];
+    element.remove();
+  }
+  for (let i = 0; i < timeStamps.length; i++) {
+    const t = timeStamps[i];
+    var stamp = createElement("div", "stamp");
     stamp.innerText = `${toText(t.minute)} : ${toText(t.second)} : ${toText(
       t.hundredth
-    )} : ${toText(Math.floor(mili * 10))}`;
+    )} : ${toText(Math.floor(t.mili * 10))}`;
     timeBox.append(stamp);
-  });
+  }
 }
