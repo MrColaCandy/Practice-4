@@ -117,7 +117,7 @@ function renderTimer(mili, hundredth, second, minute) {
 }
 
 function toText(number) {
-  return (text = number < 10 ? `0${number}` : number.toString());
+  return number < 10 ? `0${number}` : number;
 }
 
 function createTimeCircle(id) {
